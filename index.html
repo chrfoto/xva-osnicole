@@ -170,16 +170,24 @@
             max-height: 50vh;
             width: auto;
             height: auto;
-            /* Cover asegura que llene la onda, object-position evita cortar cabezas */
             object-fit: cover;
             object-position: top center;
             display: block;
             border-radius: 12px;
-            /* Máscara ondulada irregular */
             -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
             mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
             -webkit-mask-size: 100% 100%;
             mask-size: 100% 100%;
+        }
+
+        /* FOTOS GALERÍA VERTICAL: Solo esquinas redondeadas */
+        .photo-rounded {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.15);
         }
 
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -396,22 +404,23 @@
             </div>
         </section>
 
-        <section class="fade-up mt-2 mb-4">
+        <section class="fade-up mt-6 mb-8">
             <div class="relative flex justify-center items-center mb-6 px-4">
                 <img src="https://i.imgur.com/MFFkb1A.png" class="floral-edge-left" style="top: -30px; left: 0px; opacity: 0.5; width: 90px;" alt="Flores">
                 <h3 class="font-script text-center text-4xl text-accent-pink relative z-10">Rumbo a mis XV</h3>
             </div>
             
-            <div class="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory hide-scrollbar px-5 items-center relative z-20">
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/gUx7ARS.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/TMFGXsx.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/QxNcMHJ.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/dNn4K28.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/g6NMY5D.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/8si28Rk.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/kQzHvSV.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/IsJuo8B.jpeg" class="photo-wavy" alt="Foto"></div>
-                <div class="snap-center shrink-0"><img src="https://i.imgur.com/LdZeMsb.jpeg" class="photo-wavy" alt="Foto"></div>
+            <!-- GALERÍA VERTICAL (Sin ondas, solo bordes redondeados) -->
+            <div class="flex flex-col gap-5 px-6 relative z-20">
+                <div><img src="https://i.imgur.com/gUx7ARS.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/TMFGXsx.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/QxNcMHJ.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/dNn4K28.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/g6NMY5D.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/8si28Rk.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/kQzHvSV.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/IsJuo8B.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/LdZeMsb.jpeg" class="photo-rounded" alt="Foto"></div>
             </div>
         </section>
 
