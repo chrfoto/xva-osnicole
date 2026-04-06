@@ -6,7 +6,7 @@
     <title>XV Años Nicole - Floral Acuarela</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cambiamos a Pinyon Script por tener una "N" mayúscula muy definida y elegante -->
+    <!-- Google Fonts: Pinyon Script (Elegante, "N" definida) y Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Pinyon+Script&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -37,6 +37,15 @@
             font-family: 'Montserrat', sans-serif;
         }
         
+        /* Evita hacer scroll mientras la pantalla de bienvenida esté activa (Adaptado para Safari iOS) */
+        body.locked {
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh; /* Dynamic Viewport para Safari */
+            position: fixed; /* Bloqueo estricto para iPhone */
+            width: 100%;
+        }
+
         /* Contenedor principal estilo App Mobile */
         .mobile-container {
             width: 100%;
@@ -44,10 +53,83 @@
             margin: 0 auto;
             background-color: #FFF5F6; 
             min-height: 100vh;
+            min-height: 100dvh; /* Dynamic Viewport para Safari */
             position: relative;
             overflow-x: hidden;
             box-shadow: 0 0 30px rgba(0,0,0,0.1);
             padding-bottom: 60px;
+        }
+
+        /* ==============================================
+           PANTALLA DE BIENVENIDA (COVER CAROUSEL)
+           ============================================== */
+        #welcome-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; 
+            height: 100vh; height: 100dvh; /* Dynamic Viewport para Safari */
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        .slideshow {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            background-color: #000;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center 20%; /* Ajustado para dar prioridad a los rostros y no cortar cabezas */
+            opacity: 0;
+            animation: crossfade 16s infinite;
+        }
+        
+        /* Tiempos de las fotos para crear el loop infinito */
+        .slide.s1 { animation-delay: 0s; }
+        .slide.s2 { animation-delay: 4s; }
+        .slide.s3 { animation-delay: 8s; }
+        .slide.s4 { animation-delay: 12s; }
+        
+        @keyframes crossfade {
+            0%   { opacity: 1; transform: scale(1); }
+            20%  { opacity: 1; }
+            25%  { opacity: 0; transform: scale(1.05); }
+            95%  { opacity: 0; }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Degradado oscuro para que el texto blanco resalte */
+        .welcome-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(201,138,146,0.6) 100%);
+            z-index: 2;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            animation: pulse-welcome 2s infinite alternate;
+        }
+
+        @keyframes pulse-welcome {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-5px); }
+        }
+
+        /* Clase para ocultar el cover cuando abren la invitación */
+        .hidden-screen {
+            opacity: 0;
+            visibility: hidden;
         }
 
         /* ==============================================
@@ -76,7 +158,7 @@
         }
 
         /* ==============================================
-           DECORACIÓN DE DESTELLOS / ESTRELLAS (Reemplazo)
+           DECORACIÓN DE DESTELLOS / ESTRELLAS
            ============================================== */
         .sparkle-icon {
             position: absolute;
@@ -112,7 +194,7 @@
             justify-content: center;
             background-color: #C98A92;
             color: #FFFFFF;
-            padding: 12px 28px;
+            padding: 14px 32px;
             border-radius: 9999px;
             font-size: 11px;
             font-weight: 600;
@@ -120,6 +202,7 @@
             text-transform: uppercase;
             box-shadow: 0 4px 15px rgba(201, 138, 146, 0.4);
             transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
         .btn-solid:active {
             transform: scale(0.98);
@@ -133,7 +216,7 @@
             width: auto;
             height: auto;
             object-fit: cover;
-            object-position: top center;
+            object-position: center 20%; /* Baja un poco el encuadre para que la onda superior no corte la frente */
             display: block;
             border-radius: 12px;
             -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
@@ -147,6 +230,7 @@
             width: 100%;
             height: auto;
             object-fit: cover;
+            object-position: center 20%; /* Ajuste de seguridad para mantener la cara en el área visible */
             display: block;
             border-radius: 16px;
             box-shadow: 0 4px 15px rgba(201, 138, 146, 0.15);
@@ -155,12 +239,24 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
 
+        /* Animaciones ocultas inicialmente, se disparan al abrir la invitación (Parche Safari Hardware Acceleration) */
         .fade-up {
-            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0; 
+            transform: translateY(15px) translateZ(0);
+            -webkit-transform: translateY(15px) translateZ(0);
         }
+        .invitation-opened .fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            -webkit-animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(15px) translateZ(0); }
+            to { opacity: 1; transform: translateY(0) translateZ(0); }
+        }
+        @-webkit-keyframes fadeInUp {
+            from { opacity: 0; -webkit-transform: translateY(15px) translateZ(0); }
+            to { opacity: 1; -webkit-transform: translateY(0) translateZ(0); }
         }
 
         /* Divisor de texto */
@@ -189,38 +285,61 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(201, 138, 146, 0.3);
             border: 1px solid #FFF5F6;
+            opacity: 0; /* Oculto inicialmente */
+            visibility: hidden;
+            transition: opacity 0.5s;
         }
+        .invitation-opened #music-toggle {
+            opacity: 1;
+            visibility: visible;
+        }
+
         @media (max-width: 480px) { #music-toggle { right: 20px; transform: none; } }
     </style>
 </head>
-<body>
-
-    <!-- Definición global de SVGs (Acuerelas, gradientes, etc.) -->
-    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-        <defs>
-            <linearGradient id="gold-metal" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#F4CDA5"/> <!-- Oro suave -->
-                <stop offset="50%" stop-color="#E4A09C"/> <!-- Durazno -->
-                <stop offset="100%" stop-color="#FADBD8"/> <!-- Rosa pálido -->
-            </linearGradient>
-        </defs>
-    </svg>
+<body class="locked">
 
     <!-- Reproductor de Audio -->
     <audio id="bg-music" loop>
         <source src="https://media.vocaroo.com/mp3/1dWVIIvDWNhX" type="audio/mpeg">
     </audio>
 
+    <!-- Botón de música global -->
     <div id="music-toggle" onclick="toggleMusic()">
-        <i class="fas fa-music text-xl"></i>
+        <i class="fas fa-pause text-xl"></i>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL DE LA INVITACIÓN DIGITAL -->
-    <div class="mobile-container">
+    <!-- ==============================================
+         PANTALLA DE BIENVENIDA (OVERLAY)
+         ============================================== -->
+    <div id="welcome-screen">
+        <!-- Carrusel de fotos de fondo -->
+        <div class="slideshow">
+            <img src="https://i.imgur.com/LdZeMsb.jpeg" class="slide s1" alt="Bg">
+            <img src="https://i.imgur.com/gUx7ARS.jpeg" class="slide s2" alt="Bg">
+            <img src="https://i.imgur.com/TMFGXsx.jpeg" class="slide s3" alt="Bg">
+            <img src="https://i.imgur.com/QxNcMHJ.jpeg" class="slide s4" alt="Bg">
+        </div>
+        
+        <!-- Degradado y botón -->
+        <div class="welcome-overlay"></div>
+        <div class="welcome-content">
+            <p class="font-sans text-white text-[10px] tracking-[0.4em] uppercase mb-4 font-bold opacity-90">Estás invitado a los XV de</p>
+            <h1 class="font-script text-[80px] text-white leading-none mb-10 drop-shadow-lg" style="text-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                Nicole
+            </h1>
+            <button onclick="abrirInvitacion()" class="btn-solid bg-white text-accent-pink shadow-2xl" style="color: #C98A92;">
+                Abrir Invitación <i class="fas fa-envelope-open-text ml-2"></i>
+            </button>
+        </div>
+    </div>
 
-        <!-- ==============================================
-             1. HERO IMAGE (Foto Superior con Curva)
-             ============================================== -->
+    <!-- ==============================================
+         CONTENEDOR PRINCIPAL DE LA INVITACIÓN DIGITAL
+         ============================================== -->
+    <div class="mobile-container" id="main-invitation">
+
+        <!-- 1. HERO IMAGE (Foto Superior con Curva) -->
         <div class="hero-section">
             <img src="https://i.imgur.com/LdZeMsb.jpeg" alt="Nicole">
             <svg class="curve-overlay" viewBox="0 0 100 15" preserveAspectRatio="none">
@@ -228,9 +347,7 @@
             </svg>
         </div>
 
-        <!-- ==============================================
-             2. PORTADA (Tipografía y Destellos)
-             ============================================== -->
+        <!-- 2. PORTADA (Tipografía y Destellos) -->
         <div class="relative text-center mt-4 px-6 fade-up">
 
             <!-- Destellos animados (Reemplazando a las mariposas) -->
@@ -269,9 +386,7 @@
             </h1>
         </div>
 
-        <!-- ==============================================
-             3. FECHA Y FRASE
-             ============================================== -->
+        <!-- 3. FECHA Y FRASE -->
         <div class="text-center mt-10 mb-8 px-6 fade-up">
             <p class="font-sans text-[12px] font-bold tracking-[0.2em] text-accent-pink border-y border-accent-light py-3 inline-block px-8 mb-6 uppercase bg-white rounded-xl shadow-sm relative z-20">
                 16 . Mayo . 2026
@@ -283,9 +398,7 @@
             </p>
         </div>
 
-        <!-- ==============================================
-             4. PADRES Y PADRINOS (Todo en Cursiva)
-             ============================================== -->
+        <!-- 4. PADRES Y PADRINOS (Todo en Cursiva) -->
         <div class="content-card text-center fade-up relative">
             <!-- Destello decorativo -->
             <svg class="sparkle-icon delay-1 w-10 top-0 left-0 -translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
@@ -309,9 +422,7 @@
             </div>
         </div>
 
-        <!-- ==============================================
-             5. CARRETES DE FOTOS
-             ============================================== -->
+        <!-- 5. CARRETES DE FOTOS -->
         <section class="pt-8 pb-2 fade-up">
             <div class="relative flex justify-center items-center mb-6 px-4">
                 <svg class="sparkle-icon delay-2 w-8 top-[-10px] right-[20px]" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
@@ -353,9 +464,7 @@
             </div>
         </section>
 
-        <!-- ==============================================
-             6. EVENTOS (Ceremonia y Recepción)
-             ============================================== -->
+        <!-- 6. EVENTOS (Ceremonia y Recepción) -->
         <div class="content-card text-center fade-up mb-6 relative">
             
             <!-- Destello decorativo -->
@@ -393,14 +502,13 @@
                         <a href="https://maps.app.goo.gl/UP9Sprmaj57RkCio9?g_st=aw" target="_blank" class="btn-solid text-[9px] py-3 px-6">
                             Ver Ubicación <i class="fas fa-map-marker-alt ml-2"></i>
                         </a>
+                    </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- ==============================================
-             7. CÓDIGO DE VESTIMENTA & REGALOS
-             ============================================== -->
+        <!-- 7. CÓDIGO DE VESTIMENTA & REGALOS -->
         <div class="content-card text-center fade-up relative">
             
             <!-- Destello decorativo -->
@@ -447,9 +555,7 @@
 
         </div>
 
-        <!-- ==============================================
-             8. COUNTDOWN & RSVP
-             ============================================== -->
+        <!-- 8. COUNTDOWN & RSVP -->
         <section class="pt-8 px-4 text-center fade-up relative">
             <svg class="sparkle-icon w-12 top-0 left-4" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
 
@@ -496,7 +602,57 @@
     </div>
 
     <script>
-        // Cuenta Regresiva
+        // ==========================================
+        // FUNCIONALIDAD DE LA PANTALLA DE BIENVENIDA (Safari FIX)
+        // ==========================================
+        let isPlaying = false;
+        const audio = document.getElementById("bg-music");
+        const musicToggle = document.getElementById("music-toggle");
+
+        function abrirInvitacion() {
+            // 1. Quitar el bloqueo de scroll (Parche para Safari iOS)
+            document.body.classList.remove('locked');
+            document.body.style.position = 'relative';
+            
+            // 2. Ocultar la pantalla de bienvenida con transición
+            document.getElementById('welcome-screen').classList.add('hidden-screen');
+            
+            // 3. Activar las animaciones de la invitación
+            document.body.classList.add('invitation-opened');
+
+            // 4. Iniciar la música automáticamente (Adaptado para las políticas de iOS)
+            if (!isPlaying) {
+                audio.load(); // Forzar carga en Safari antes de reproducir para asegurar interacción
+                let playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        isPlaying = true;
+                        musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
+                    }).catch(error => {
+                        console.log("El navegador (Safari/iOS) bloqueó el autoplay", error);
+                    });
+                }
+            }
+        }
+
+        // ==========================================
+        // REPRODUCTOR DE MÚSICA (TOGGLE)
+        // ==========================================
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicToggle.innerHTML = '<i class="fas fa-music text-xl"></i>';
+                isPlaying = false;
+            } else {
+                audio.play();
+                musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
+                isPlaying = true;
+            }
+        }
+
+        // ==========================================
+        // CUENTA REGRESIVA
+        // ==========================================
         const countDownDate = new Date("May 16, 2026 17:00:00").getTime();
         const x = setInterval(function() {
             const now = new Date().getTime();
@@ -520,29 +676,6 @@
                 }
             }
         }, 1000);
-
-        // Reproductor de Música
-        const audio = document.getElementById("bg-music");
-        const musicToggle = document.getElementById("music-toggle");
-        let isPlaying = false;
-
-        function toggleMusic() {
-            if (isPlaying) {
-                audio.pause();
-                musicToggle.innerHTML = '<i class="fas fa-music text-xl"></i>';
-                isPlaying = false;
-            } else {
-                let playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
-                        isPlaying = true;
-                    }).catch(error => {
-                        console.log("Audio blocked by browser", error);
-                    });
-                }
-            }
-        }
     </script>
 </body>
 </html>
