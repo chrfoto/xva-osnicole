@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XV Años Nicole - Floral Acuarela</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Pinyon Script (Elegante, "N" definida) y Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-pink': '#FFF5F6',       /* Fondo rosa pastel muy claro */
+                        'text-main': '#7A5C61',     /* Texto oscuro/mauve para contraste */
+                        'accent-pink': '#C98A92',   /* Rosa viejo/Blush para detalles y botones */
+                        'accent-light': '#E8C5C9',
+                    },
+                    fontFamily: {
+                        'script': ['"Pinyon Script"', 'cursive'],
+                        'sans': ['"Montserrat"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+            -webkit-tap-highlight-color: transparent;
+            color: #7A5C61;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Evita hacer scroll mientras la pantalla de bienvenida esté activa (Adaptado para Safari iOS) */
+        body.locked {
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh; /* Dynamic Viewport para Safari */
+            position: fixed; /* Bloqueo estricto para iPhone */
+            width: 100%;
+        }
+
+        /* Contenedor principal estilo App Mobile */
+        .mobile-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #FFF5F6; 
+            min-height: 100vh;
+            min-height: 100dvh; /* Dynamic Viewport para Safari */
+            position: relative;
+            overflow-x: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            padding-bottom: 60px;
+        }
+
+        /* ==============================================
+           PANTALLA DE BIENVENIDA (COVER CAROUSEL)
+           ============================================== */
+        #welcome-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; 
+            height: 100vh; height: 100dvh; /* Dynamic Viewport para Safari */
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        .slideshow {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            background-color: #000;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center 20%; /* Ajustado para dar prioridad a los rostros y no cortar cabezas */
+            opacity: 0;
+            animation: crossfade 16s infinite;
+        }
+        
+        /* Tiempos de las fotos para crear el loop infinito */
+        .slide.s1 { animation-delay: 0s; }
+        .slide.s2 { animation-delay: 4s; }
+        .slide.s3 { animation-delay: 8s; }
+        .slide.s4 { animation-delay: 12s; }
+        
+        @keyframes crossfade {
+            0%   { opacity: 1; transform: scale(1); }
+            20%  { opacity: 1; }
+            25%  { opacity: 0; transform: scale(1.05); }
+            95%  { opacity: 0; }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Degradado oscuro para que el texto blanco resalte */
+        .welcome-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(201,138,146,0.6) 100%);
+            z-index: 2;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            animation: pulse-welcome 2s infinite alternate;
+        }
+
+        @keyframes pulse-welcome {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-5px); }
+        }
+
+        /* Clase para ocultar el cover cuando abren la invitación */
+        .hidden-screen {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* ==============================================
+           HERO IMAGE (Foto principal con curva)
+           ============================================== */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 55vh; 
+            background-color: #FFF5F6;
+        }
+        .hero-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ajustamos el encuadre: "center 30%" recorta el espacio de arriba para que ella suba en la pantalla */
+            object-position: center 30%;
+        }
+        .curve-overlay {
+            position: absolute;
+            bottom: -1px; 
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: 10;
+        }
+
+        /* ==============================================
+           DECORACIÓN DE DESTELLOS / ESTRELLAS
+           ============================================== */
+        .sparkle-icon {
+            position: absolute;
+            color: #C98A92;
+            animation: pulse-glow 3s infinite alternate ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .sparkle-icon.delay-1 { animation-delay: 1s; }
+        .sparkle-icon.delay-2 { animation-delay: 2s; }
+        
+        @keyframes pulse-glow {
+            0% { transform: scale(0.5) rotate(0deg); opacity: 0.2; }
+            100% { transform: scale(1.2) rotate(15deg); opacity: 0.7; filter: drop-shadow(0 0 6px rgba(201, 138, 146, 0.4)); }
+        }
+
+        /* ==============================================
+           ESTILOS LIMPIOS Y MODERNOS
+           ============================================== */
+        .content-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(201, 138, 146, 0.15);
+            margin: 0 20px 20px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-solid {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #C98A92;
+            color: #FFFFFF;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .btn-solid:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(201, 138, 146, 0.4);
+        }
+
+        /* FOTOS DEL CARRUSEL: Borde ondulado y encuadre corregido */
+        .photo-wavy {
+            max-width: 80vw;
+            max-height: 50vh;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+            object-position: center 20%; /* Baja un poco el encuadre para que la onda superior no corte la frente */
+            display: block;
+            border-radius: 12px;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+        }
+
+        /* FOTOS GALERÍA VERTICAL: Solo esquinas redondeadas */
+        .photo-rounded {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            object-position: center 20%; /* Ajuste de seguridad para mantener la cara en el área visible */
+            display: block;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.15);
+        }
+
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Animaciones ocultas inicialmente, se disparan al abrir la invitación (Parche Safari Hardware Acceleration) */
+        .fade-up {
+            opacity: 0; 
+            transform: translateY(15px) translateZ(0);
+            -webkit-transform: translateY(15px) translateZ(0);
+        }
+        .invitation-opened .fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            -webkit-animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px) translateZ(0); }
+            to { opacity: 1; transform: translateY(0) translateZ(0); }
+        }
+        @-webkit-keyframes fadeInUp {
+            from { opacity: 0; -webkit-transform: translateY(15px) translateZ(0); }
+            to { opacity: 1; -webkit-transform: translateY(0) translateZ(0); }
+        }
+
+        /* Divisor de texto */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            color: #C98A92;
+            font-size: 12px;
+            letter-spacing: 4px;
+        }
+
+        #music-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 50%;
+            transform: translateX(160px);
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            color: #C98A92;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.3);
+            border: 1px solid #FFF5F6;
+            opacity: 0; /* Oculto inicialmente */
+            visibility: hidden;
+            transition: opacity 0.5s;
+        }
+        .invitation-opened #music-toggle {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 480px) { #music-toggle { right: 20px; transform: none; } }
+    </style>
+</head>
+<body class="locked">
+
+    <!-- Reproductor de Audio -->
+    <audio id="bg-music" loop>
+        <source src="https://media.vocaroo.com/mp3/1dWVIIvDWNhX" type="audio/mpeg">
+    </audio>
+
+    <!-- Botón de música global -->
+    <div id="music-toggle" onclick="toggleMusic()">
+        <i class="fas fa-pause text-xl"></i>
+    </div>
+
+    <!-- ==============================================
+         PANTALLA DE BIENVENIDA (OVERLAY)
+         ============================================== -->
+    <div id="welcome-screen">
+        <!-- Carrusel de fotos de fondo -->
+        <div class="slideshow">
+            <img src="https://i.imgur.com/LdZeMsb.jpeg" class="slide s1" alt="Bg">
+            <img src="https://i.imgur.com/gUx7ARS.jpeg" class="slide s2" alt="Bg">
+            <img src="https://i.imgur.com/TMFGXsx.jpeg" class="slide s3" alt="Bg">
+            <img src="https://i.imgur.com/QxNcMHJ.jpeg" class="slide s4" alt="Bg">
+        </div>
+        
+        <!-- Degradado y botón -->
+        <div class="welcome-overlay"></div>
+        <div class="welcome-content">
+            <p class="font-sans text-white text-[10px] tracking-[0.4em] uppercase mb-4 font-bold opacity-90">Estás invitado a los XV de</p>
+            <h1 class="font-script text-[80px] text-white leading-none mb-10 drop-shadow-lg" style="text-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                Nicole
+            </h1>
+            <button onclick="abrirInvitacion()" class="btn-solid bg-white text-accent-pink shadow-2xl" style="color: #C98A92;">
+                Abrir Invitación <i class="fas fa-envelope-open-text ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         CONTENEDOR PRINCIPAL DE LA INVITACIÓN DIGITAL
+         ============================================== -->
+    <div class="mobile-container" id="main-invitation">
+
+        <!-- 1. HERO IMAGE (Foto Superior con Curva) -->
+        <div class="hero-section">
+            <img src="https://i.imgur.com/LdZeMsb.jpeg" alt="Nicole">
+            <svg class="curve-overlay" viewBox="0 0 100 15" preserveAspectRatio="none">
+                <path d="M0,15 L100,15 L100,0 Q50,25 0,0 Z" fill="#FFF5F6" />
+            </svg>
+        </div>
+
+        <!-- 2. PORTADA (Tipografía y Destellos) -->
+        <div class="relative text-center mt-4 px-6 fade-up">
+
+            <!-- Destellos animados (Reemplazando a las mariposas) -->
+            <svg class="sparkle-icon w-10 top-2 left-6" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/>
+            </svg>
+            <svg class="sparkle-icon delay-1 w-6 top-16 right-8" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/>
+            </svg>
+            <svg class="sparkle-icon delay-2 w-8 bottom-6 left-10" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/>
+            </svg>
+
+            <!-- Corona Lineal Simple -->
+            <div class="flex justify-center mb-4 text-accent-pink relative z-20">
+                <svg width="45" height="30" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 50 L90 50" />
+                    <path d="M20 45 L10 15 L35 30 L50 5 L65 30 L90 15 L80 45 Z" />
+                    <circle cx="50" cy="5" r="3" fill="currentColor"/>
+                    <circle cx="10" cy="15" r="2.5" fill="currentColor"/>
+                    <circle cx="90" cy="15" r="2.5" fill="currentColor"/>
+                </svg>
+            </div>
+            
+            <!-- Tipografía Destacada MUCHO MÁS GRANDE -->
+            <h2 class="font-sans text-[28px] font-bold tracking-[0.2em] text-accent-pink uppercase mb-2 relative z-20">
+                Mis XV Años
+            </h2>
+
+            <div class="divider my-4">✦ ── ✦</div>
+            
+            <!-- Nombre Completo unificado en la misma tipografía cursiva -->
+            <h1 class="font-script text-accent-pink leading-tight my-4 relative z-20">
+                <span class="text-[60px] block mb-1">Nicole</span>
+                <span class="text-[40px] block leading-none">De La Cruz Sandoval</span>
+            </h1>
+        </div>
+
+        <!-- 3. FECHA Y FRASE -->
+        <div class="text-center mt-10 mb-8 px-6 fade-up">
+            <p class="font-sans text-[12px] font-bold tracking-[0.2em] text-accent-pink border-y border-accent-light py-3 inline-block px-8 mb-6 uppercase bg-white rounded-xl shadow-sm relative z-20">
+                16 . Mayo . 2026
+            </p>
+
+            <!-- Frase grande, en negritas y cursiva -->
+            <p class="font-sans italic font-bold text-[18px] text-text-main leading-relaxed px-2 relative z-20">
+                "Hay momentos en la vida que son irrepetibles, pero compartirlos con las personas que más quieres, los vuelve inolvidables."
+            </p>
+        </div>
+
+        <!-- 4. PADRES Y PADRINOS (Todo en Cursiva) -->
+        <div class="content-card text-center fade-up relative">
+            <!-- Destello decorativo -->
+            <svg class="sparkle-icon delay-1 w-10 top-0 left-0 -translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+
+            <div class="relative z-10 pt-2 space-y-6 italic">
+                <div>
+                    <p class="font-sans text-[9px] font-bold tracking-[0.2em] text-accent-pink uppercase mb-2 italic">Con la bendición de Dios y mis padres</p>
+                    <p class="font-sans text-[13px] text-text-main font-semibold italic">Alma Sandoval Reyes</p>
+                    <p class="font-sans text-[13px] text-text-main font-semibold mt-1 italic">Hector Sanchez Vaca</p>
+                </div>
+
+                <div class="divider my-4">✦ ── ✦</div>
+
+                <div class="relative">
+                    <div class="relative z-10">
+                        <p class="font-sans text-[9px] font-bold tracking-[0.2em] text-accent-pink uppercase mb-2 italic">Y mis padrinos</p>
+                        <p class="font-sans text-[13px] text-text-main font-semibold italic">Rebeca Sandoval Reyes</p>
+                        <p class="font-sans text-[13px] text-text-main font-semibold mt-1 italic">Mauricio Alvarez Camilo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CARRETES DE FOTOS -->
+        <section class="pt-8 pb-2 fade-up">
+            <div class="relative flex justify-center items-center mb-6 px-4">
+                <svg class="sparkle-icon delay-2 w-8 top-[-10px] right-[20px]" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+                <h3 class="font-script text-center text-4xl text-accent-pink relative z-10">Mis Primeros Años</h3>
+            </div>
+            
+            <div class="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory hide-scrollbar px-5 items-center relative z-20">
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/kOqPiEX.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/YLM3Df7.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/xjhBKnI.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/7naPIfW.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/RPjODYb.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/f4IBbcU.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/86nv8FC.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/VjPRx1o.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/wYOb140.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/trfadYI.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/xen9xml.jpeg" class="photo-wavy" alt="Foto"></div>
+            </div>
+        </section>
+
+        <section class="fade-up mt-6 mb-8">
+            <div class="relative flex justify-center items-center mb-6 px-4">
+                <svg class="sparkle-icon w-8 top-[-10px] left-[20px]" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+                <h3 class="font-script text-center text-4xl text-accent-pink relative z-10">Rumbo a mis XV</h3>
+            </div>
+            
+            <!-- GALERÍA VERTICAL (Sin ondas, solo bordes redondeados) -->
+            <div class="flex flex-col gap-5 px-6 relative z-20">
+                <div><img src="https://i.imgur.com/gUx7ARS.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/TMFGXsx.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/QxNcMHJ.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/dNn4K28.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/g6NMY5D.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/8si28Rk.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/kQzHvSV.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/IsJuo8B.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/LdZeMsb.jpeg" class="photo-rounded" alt="Foto"></div>
+            </div>
+        </section>
+
+        <!-- 6. EVENTOS (Ceremonia y Recepción) -->
+        <div class="content-card text-center fade-up mb-6 relative">
+            
+            <!-- Destello decorativo -->
+            <svg class="sparkle-icon w-10 top-0 left-0 -translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+
+            <div class="relative z-10 pt-2">
+                <div class="mb-8">
+                    <div class="w-12 h-12 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-xl shadow-sm border border-white">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <h3 class="font-sans text-[14px] uppercase tracking-[0.2em] text-text-main font-bold mb-1">Ceremonia</h3>
+                    <p class="font-sans font-semibold text-accent-pink text-[12px] tracking-widest mb-3">5:00 PM</p>
+                    <p class="font-sans text-[10px] text-text-main mb-4 leading-relaxed font-medium">
+                        Santuario del Santo Niño de la Salud<br>
+                        <span class="opacity-70 text-[9px]">Av. Acueducto, Lomas de Hidalgo</span>
+                    </p>
+                    <a href="https://maps.app.goo.gl/2s1T3w1A7HBk43u96" target="_blank" class="btn-solid text-[9px] py-3 px-6">
+                        Ver Ubicación <i class="fas fa-map-marker-alt ml-2"></i>
+                    </a>
+                </div>
+
+                <div class="divider my-6">✦ ── ✦</div>
+
+                <div class="mt-8 relative">
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-xl shadow-sm border border-white">
+                            <i class="fas fa-glass-cheers"></i>
+                        </div>
+                        <h3 class="font-sans text-[14px] uppercase tracking-[0.2em] text-text-main font-bold mb-1">Recepción</h3>
+                        <p class="font-sans font-semibold text-accent-pink text-[12px] tracking-widest mb-3">7:00 PM</p>
+                        <p class="font-sans text-[10px] text-text-main mb-4 leading-relaxed font-medium">
+                            Eventos Isabel<br>
+                            <span class="opacity-70 text-[9px]">Privada de Mármol #38, Hacienda Los Viñedos</span>
+                        </p>
+                        <a href="https://maps.app.goo.gl/UP9Sprmaj57RkCio9?g_st=aw" target="_blank" class="btn-solid text-[9px] py-3 px-6">
+                            Ver Ubicación <i class="fas fa-map-marker-alt ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 7. CÓDIGO DE VESTIMENTA & REGALOS -->
+        <div class="content-card text-center fade-up relative">
+            
+            <!-- Destello decorativo -->
+            <svg class="sparkle-icon delay-1 w-10 top-0 right-0 translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+            
+            <div class="relative z-10 pt-2">
+                <div class="mb-10">
+                    <div class="w-10 h-10 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-lg shadow-sm border border-white">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3 class="font-sans text-[13px] uppercase tracking-[0.2em] text-text-main font-bold mb-2">Código de Vestimenta</h3>
+                    <p class="font-sans font-bold text-accent-pink text-[12px] tracking-widest uppercase mb-3">Formal</p>
+                    <div class="bg-bg-pink p-3 rounded-lg border border-accent-light shadow-inner">
+                        <p class="font-sans text-[9px] text-text-main leading-relaxed uppercase tracking-wider font-semibold">
+                            Se reserva el uso de los colores<br>
+                            <span class="font-bold text-[#b85966]">Rosa</span>, <span class="font-bold text-[#8A6F7E]">Mauve</span>, <span class="font-bold text-[#C98A92]">Rose Gold</span> y <span class="font-bold text-gray-500">Plateado</span><br>
+                            exclusivamente para la quinceañera.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider my-6">✦ ── ✦</div>
+
+                <div class="relative">
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-lg shadow-sm border border-white">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3 class="font-sans text-[13px] uppercase tracking-[0.2em] text-text-main font-bold mb-3">Mesa de Regalos</h3>
+                        <p class="font-sans text-[9px] text-text-main mb-5 leading-relaxed uppercase tracking-wide font-medium">
+                            Tu presencia es mi mayor regalo, pero si deseas tener un detalle conmigo:
+                        </p>
+                        
+                        <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51974095" target="_blank" class="btn-solid w-full mb-3 shadow-md">
+                            Liverpool: 51974095
+                        </a>
+                        <p class="font-sans text-[10px] text-accent-pink font-bold mb-3 uppercase">ó</p>
+                        <div class="w-full border-2 border-accent-pink text-accent-pink bg-white py-3 rounded-full font-sans text-[11px] font-bold uppercase tracking-widest flex justify-center items-center shadow-sm">
+                            <i class="fas fa-box-open mr-2"></i> Regalo Sorpresa
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 8. COUNTDOWN & RSVP -->
+        <section class="pt-8 px-4 text-center fade-up relative">
+            <svg class="sparkle-icon w-12 top-0 left-4" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+
+            <div class="relative z-10">
+                <h3 class="font-sans text-[11px] uppercase tracking-[0.3em] text-text-main font-bold mb-6">Faltan</h3>
+                
+                <div class="flex justify-center gap-3 font-sans text-text-main mb-10">
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="days" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Días</span>
+                    </div>
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="hours" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Hrs</span>
+                    </div>
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="minutes" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Min</span>
+                    </div>
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="seconds" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Seg</span>
+                    </div>
+                </div>
+
+                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+de+Nicole&dates=20260516T230000Z/20260517T080000Z&details=%C2%A1Te+espero+para+celebrar+mis+XV+a%C3%B1os!%0A%0ACeremonia:+5:00+PM%0ARecepci%C3%B3n:+7:00+PM&location=Santuario+del+Santo+Ni%C3%B1o+de+la+Salud,+Morelia,+Mich." target="_blank" class="font-sans text-[9px] text-accent-pink border-b border-accent-pink pb-1 mb-10 inline-block uppercase tracking-widest font-bold hover:opacity-70 transition">
+                    <i class="far fa-calendar-alt mr-1"></i> Agendar Fecha
+                </a>
+
+                <div class="mt-4 px-2">
+                    <p class="font-sans text-[10px] text-text-main mb-5 leading-relaxed uppercase tracking-widest font-semibold">
+                        Confirma tu asistencia antes del<br>
+                        <span class="font-bold text-[12px] text-accent-pink">01 de Mayo de 2026</span>
+                    </p>
+                    <a href="https://wa.me/524431465149?text=¡Hola!%20Confirmo%20mi%20asistencia%20a%20los%20XV%20años%20de%20Nicole.%20✨" target="_blank" class="btn-solid w-full shadow-lg">
+                        Confirmar Asistencia <i class="fab fa-whatsapp ml-2 text-xl"></i>
+                    </a>
+                </div>
+            
+                <p class="font-script text-6xl mt-16 text-accent-pink">¡Te espero!</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // FUNCIONALIDAD DE LA PANTALLA DE BIENVENIDA (Safari FIX)
+        // ==========================================
+        let isPlaying = false;
+        const audio = document.getElementById("bg-music");
+        const musicToggle = document.getElementById("music-toggle");
+
+        function abrirInvitacion() {
+            // 1. Quitar el bloqueo de scroll (Parche para Safari iOS)
+            document.body.classList.remove('locked');
+            document.body.style.position = 'relative';
+            
+            // 2. Ocultar la pantalla de bienvenida con transición
+            document.getElementById('welcome-screen').classList.add('hidden-screen');
+            
+            // 3. Activar las animaciones de la invitación
+            document.body.classList.add('invitation-opened');
+
+            // 4. Iniciar la música automáticamente (Adaptado para las políticas de iOS)
+            if (!isPlaying) {
+                audio.load(); // Forzar carga en Safari antes de reproducir para asegurar interacción
+                let playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        isPlaying = true;
+                        musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
+                    }).catch(error => {
+                        console.log("El navegador (Safari/iOS) bloqueó el autoplay", error);
+                    });
+                }
+            }
+        }
+
+        // ==========================================
+        // REPRODUCTOR DE MÚSICA (TOGGLE)
+        // ==========================================
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicToggle.innerHTML = '<i class="fas fa-music text-xl"></i>';
+                isPlaying = false;
+            } else {
+                audio.play();
+                musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
+                isPlaying = true;
+            }
+        }
+
+        // ==========================================
+        // CUENTA REGRESIVA
+        // ==========================================
+        const countDownDate = new Date("May 16, 2026 17:00:00").getTime();
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            const daysEl = document.getElementById("days");
+            if (daysEl) {
+                daysEl.innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+
+            if (distance < 0) {
+                clearInterval(x);
+                if (daysEl) {
+                    daysEl.innerHTML = "00";
+                    document.getElementById("hours").innerHTML = "00";
+                    document.getElementById("minutes").innerHTML = "00";
+                    document.getElementById("seconds").innerHTML = "00";
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
