@@ -1,629 +1,681 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XV Años Romina</title>
-    <!-- Fuentes Premium -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Tailwind -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XV Años Nicole - Floral Acuarela</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Pinyon Script (Elegante, "N" definida) y Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-pink': '#FFF5F6',       /* Fondo rosa pastel muy claro */
+                        'text-main': '#7A5C61',     /* Texto oscuro/mauve para contraste */
+                        'accent-pink': '#C98A92',   /* Rosa viejo/Blush para detalles y botones */
+                        'accent-light': '#E8C5C9',
+                    },
+                    fontFamily: {
+                        'script': ['"Pinyon Script"', 'cursive'],
+                        'sans': ['"Montserrat"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-light: #ffffff;
-            --lavender-soft: #f8f6fa;
-            --purple-mist: #e1bee7;
-            --accent-purple: #6a1b9a;
-            --deep-purple: #4a148c;
-            --sage-green: #8da399; 
-            --lantern-orange: #ff9100;
-        }
-
         body {
+            background-color: #f3f4f6;
+            -webkit-tap-highlight-color: transparent;
+            color: #7A5C61;
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--deep-purple);
-            overflow: hidden; 
+        }
+        
+        /* Evita hacer scroll mientras la pantalla de bienvenida esté activa (Adaptado para Safari iOS) */
+        body.locked {
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh; /* Dynamic Viewport para Safari */
+            position: fixed; /* Bloqueo estricto para iPhone */
+            width: 100%;
         }
 
-        .font-script { font-family: 'Great Vibes', cursive; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        /* Contenedor principal estilo App Mobile */
+        .mobile-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #FFF5F6; 
+            min-height: 100vh;
+            min-height: 100dvh; /* Dynamic Viewport para Safari */
+            position: relative;
+            overflow-x: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            padding-bottom: 60px;
+        }
 
-        /* --- BIENVENIDA PANTALLA COMPLETA --- */
-        #welcome-overlay {
+        /* ==============================================
+           PANTALLA DE BIENVENIDA (COVER CAROUSEL)
+           ============================================== */
+        #welcome-screen {
             position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: url('https://i.imgur.com/1sFijb2.jpg') no-repeat center center;
-            background-size: cover;
+            top: 0; left: 0; width: 100%; 
+            height: 100vh; height: 100dvh; /* Dynamic Viewport para Safari */
+            z-index: 9999;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 2rem;
-            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
-
-        #welcome-overlay::before {
-            content: '';
+        
+        .slideshow {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.4) 100%);
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
+            background-color: #000;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center 20%; /* Ajustado para dar prioridad a los rostros y no cortar cabezas */
+            opacity: 0;
+            animation: crossfade 16s infinite;
+        }
+        
+        /* Tiempos de las fotos para crear el loop infinito */
+        .slide.s1 { animation-delay: 0s; }
+        .slide.s2 { animation-delay: 4s; }
+        .slide.s3 { animation-delay: 8s; }
+        .slide.s4 { animation-delay: 12s; }
+        
+        @keyframes crossfade {
+            0%   { opacity: 1; transform: scale(1); }
+            20%  { opacity: 1; }
+            25%  { opacity: 0; transform: scale(1.05); }
+            95%  { opacity: 0; }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        #welcome-overlay.opened {
-            transform: translateY(-100%);
+        /* Degradado oscuro para que el texto blanco resalte */
+        .welcome-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(201,138,146,0.6) 100%);
+            z-index: 2;
         }
 
         .welcome-content {
             position: relative;
+            z-index: 3;
             text-align: center;
-            color: white;
+            width: 100%;
+            padding: 0 20px;
+            animation: pulse-welcome 2s infinite alternate;
+        }
+
+        @keyframes pulse-welcome {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-5px); }
+        }
+
+        /* Clase para ocultar el cover cuando abren la invitación */
+        .hidden-screen {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* ==============================================
+           HERO IMAGE (Foto principal con curva)
+           ============================================== */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 55vh; 
+            background-color: #FFF5F6;
+        }
+        .hero-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ajustamos el encuadre: "center 30%" recorta el espacio de arriba para que ella suba en la pantalla */
+            object-position: center 30%;
+        }
+        .curve-overlay {
+            position: absolute;
+            bottom: -1px; 
+            left: 0;
+            width: 100%;
+            height: auto;
             z-index: 10;
         }
 
-        .title-main {
-            font-family: 'Great Vibes', cursive;
-            font-size: clamp(4rem, 15vw, 9rem);
-            color: white;
-            text-shadow: 2px 2px 20px rgba(0,0,0,0.6);
-            line-height: 1.1;
+        /* ==============================================
+           DECORACIÓN DE DESTELLOS / ESTRELLAS
+           ============================================== */
+        .sparkle-icon {
+            position: absolute;
+            color: #C98A92;
+            animation: pulse-glow 3s infinite alternate ease-in-out;
+            pointer-events: none;
+            z-index: 0;
         }
-
-        /* --- SISTEMA DE ANIMACIONES --- */
-        .reveal { opacity: 0; transform: translateY(50px); transition: all 1.2s cubic-bezier(0.2, 1, 0.3, 1); }
-        .reveal-left { opacity: 0; transform: translateX(-50px); transition: all 1.2s cubic-bezier(0.2, 1, 0.3, 1); }
-        .reveal-right { opacity: 0; transform: translateX(50px); transition: all 1.2s cubic-bezier(0.2, 1, 0.3, 1); }
-        .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 1.2s cubic-bezier(0.2, 1, 0.3, 1); }
+        .sparkle-icon.delay-1 { animation-delay: 1s; }
+        .sparkle-icon.delay-2 { animation-delay: 2s; }
         
-        .active { opacity: 1; transform: translate(0) scale(1); }
+        @keyframes pulse-glow {
+            0% { transform: scale(0.5) rotate(0deg); opacity: 0.2; }
+            100% { transform: scale(1.2) rotate(15deg); opacity: 0.7; filter: drop-shadow(0 0 6px rgba(201, 138, 146, 0.4)); }
+        }
 
-        .stagger-1 { transition-delay: 0.1s; }
-        .stagger-2 { transition-delay: 0.2s; }
+        /* ==============================================
+           ESTILOS LIMPIOS Y MODERNOS
+           ============================================== */
+        .content-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(201, 138, 146, 0.15);
+            margin: 0 20px 20px 20px;
+            position: relative;
+            z-index: 10;
+        }
 
-        /* --- BOTONES --- */
-        .btn-welcome {
-            background-color: #ffffff;
-            color: var(--deep-purple);
-            padding: 16px 45px;
-            letter-spacing: 4px;
+        .btn-solid {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #C98A92;
+            color: #FFFFFF;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
-            margin-top: 4rem;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
-        .btn-welcome:hover { transform: scale(1.03); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .btn-solid:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(201, 138, 146, 0.4);
+        }
 
-        /* --- MARCOS FLORALES --- */
-        .elegant-floral-frame {
-            position: relative;
-            display: inline-block;
-            padding: 35px;
-            margin: 10px auto;
-        }
-        .frame-lines {
-            position: absolute;
-            inset: 15px;
-            border: 1px solid var(--sage-green);
-            pointer-events: none;
-            z-index: 3;
-            transition: all 1.5s ease;
-        }
-        .corner-branch {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            z-index: 4;
-            color: var(--sage-green);
-            pointer-events: none;
-            transition: all 1.5s ease;
-        }
-        .cb-tl { top: -5px; left: -5px; opacity: 0.8; }
-        .cb-br { bottom: -5px; right: -5px; transform: rotate(180deg); opacity: 0.8; }
-
-        .framed-photo {
-            position: relative;
-            z-index: 2;
-            display: block;
-            max-width: 100%;
+        /* FOTOS DEL CARRUSEL: Borde ondulado y encuadre corregido */
+        .photo-wavy {
+            max-width: 80vw;
+            max-height: 50vh;
+            width: auto;
             height: auto;
+            object-fit: cover;
+            object-position: center 20%; /* Baja un poco el encuadre para que la onda superior no corte la frente */
+            display: block;
+            border-radius: 12px;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 C20,-2 40,12 60,5 C80,-2 90,8 100,3 L100,97 C90,92 80,102 60,95 C40,88 20,102 0,95 Z' fill='black'/%3E%3C/svg%3E");
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
         }
 
-        /* --- NUEVAS DECORACIONES BOTÁNICAS DETALLADAS --- */
-        .botanical-accent {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1;
-            color: var(--sage-green);
-            opacity: 0.6;
-            transition: all 2.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Lianas con Capullos */
-        .vine-full { height: 450px; width: 120px; }
-        .vine-l { left: 0; top: 0; transform: translateX(-30px); }
-        .vine-r { right: 0; top: 0; transform: translateX(30px) scaleX(-1); }
-        .active.vine-l, .active.vine-r { transform: translateX(0) scaleX(var(--tw-scale-x, 1)); }
-
-        /* Capullos y Flores pequeñas flotantes */
-        .floral-bloom {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            opacity: 0;
-            transform: scale(0);
-            transition: all 1s ease;
-            transition-delay: 0.5s;
-        }
-        .active .floral-bloom { opacity: 0.4; transform: scale(1); }
-
-        /* MARIPOSAS */
-        .butterfly-container { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
-        .butterfly { position: absolute; width: 30px; height: 30px; transform-style: preserve-3d; animation: fly var(--speed) infinite linear; }
-        .wing { position: absolute; width: 15px; height: 25px; background: rgba(255, 255, 255, 0.8); border-radius: 50% 50% 0 50%; border: 0.5px solid #eee; }
-        .wing.left { transform-origin: right center; animation: flap-l 0.3s infinite ease-in-out; }
-        .wing.right { left: 15px; transform-origin: left center; border-radius: 50% 50% 50% 0; animation: flap-r 0.3s infinite ease-in-out; }
-        @keyframes flap-l { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(70deg); } }
-        @keyframes flap-r { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(-70deg); } }
-        @keyframes fly { 0% { transform: translate(-10vw, 100vh) rotate(0deg); } 100% { transform: translate(110vw, -10vh) rotate(20deg); } }
-
-        /* PORTADA */
-        .hero-full {
-            height: 100vh;
+        /* FOTOS GALERÍA VERTICAL: Solo esquinas redondeadas */
+        .photo-rounded {
             width: 100%;
-            background-size: cover;
-            background-position: center;
+            height: auto;
+            object-fit: cover;
+            object-position: center 20%; /* Ajuste de seguridad para mantener la cara en el área visible */
+            display: block;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.15);
+        }
+
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Animaciones ocultas inicialmente, se disparan al abrir la invitación (Parche Safari Hardware Acceleration) */
+        .fade-up {
+            opacity: 0; 
+            transform: translateY(15px) translateZ(0);
+            -webkit-transform: translateY(15px) translateZ(0);
+        }
+        .invitation-opened .fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            -webkit-animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px) translateZ(0); }
+            to { opacity: 1; transform: translateY(0) translateZ(0); }
+        }
+        @-webkit-keyframes fadeInUp {
+            from { opacity: 0; -webkit-transform: translateY(15px) translateZ(0); }
+            to { opacity: 1; -webkit-transform: translateY(0) translateZ(0); }
+        }
+
+        /* Divisor de texto */
+        .divider {
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-        }
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.3) 100%);
+            margin: 15px 0;
+            color: #C98A92;
+            font-size: 12px;
+            letter-spacing: 4px;
         }
 
-        .itinerary-line {
-            width: 1px;
-            background: linear-gradient(to bottom, transparent, var(--sage-green), transparent);
-            height: 0;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: height 2s ease;
+        #music-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 50%;
+            transform: translateX(160px);
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            color: #C98A92;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(201, 138, 146, 0.3);
+            border: 1px solid #FFF5F6;
+            opacity: 0; /* Oculto inicialmente */
+            visibility: hidden;
+            transition: opacity 0.5s;
         }
-        .active .itinerary-line { height: 100%; }
+        .invitation-opened #music-toggle {
+            opacity: 1;
+            visibility: visible;
+        }
 
-        #confirmar {
-            background: linear-gradient(135deg, #ffffff 0%, #f9f7fc 100%);
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 6rem 1rem 12rem 1rem;
-            position: relative;
-            z-index: 5;
-        }
+        @media (max-width: 480px) { #music-toggle { right: 20px; transform: none; } }
     </style>
 </head>
-<body class="overflow-hidden">
+<body class="locked">
 
-    <!-- BIENVENIDA -->
-    <div id="welcome-overlay">
+    <!-- Reproductor de Audio -->
+    <audio id="bg-music" loop>
+        <source src="https://media.vocaroo.com/mp3/1dWVIIvDWNhX" type="audio/mpeg">
+    </audio>
+
+    <!-- Botón de música global -->
+    <div id="music-toggle" onclick="toggleMusic()">
+        <i class="fas fa-pause text-xl"></i>
+    </div>
+
+    <!-- ==============================================
+         PANTALLA DE BIENVENIDA (OVERLAY)
+         ============================================== -->
+    <div id="welcome-screen">
+        <!-- Carrusel de fotos de fondo -->
+        <div class="slideshow">
+            <img src="https://i.imgur.com/LdZeMsb.jpeg" class="slide s1" alt="Bg">
+            <img src="https://i.imgur.com/gUx7ARS.jpeg" class="slide s2" alt="Bg">
+            <img src="https://i.imgur.com/TMFGXsx.jpeg" class="slide s3" alt="Bg">
+            <img src="https://i.imgur.com/QxNcMHJ.jpeg" class="slide s4" alt="Bg">
+        </div>
+        
+        <!-- Degradado y botón -->
+        <div class="welcome-overlay"></div>
         <div class="welcome-content">
-            <h2 class="font-serif text-sm tracking-[0.6em] mb-4 uppercase opacity-90">Invitación Personal</h2>
-            <p class="font-script text-3xl md:text-5xl text-white opacity-90 mb-4">Mis XV Años</p>
-            <h1 class="title-main">Romina</h1>
-            
-            <button id="open-btn" class="btn-welcome mx-auto">
-                <i class="fa-solid fa-envelope-open text-xs"></i> ABRIR INVITACIÓN
+            <p class="font-sans text-white text-[10px] tracking-[0.4em] uppercase mb-4 font-bold opacity-90">Estás invitado a los XV de</p>
+            <h1 class="font-script text-[80px] text-white leading-none mb-10 drop-shadow-lg" style="text-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                Nicole
+            </h1>
+            <button onclick="abrirInvitacion()" class="btn-solid bg-white text-accent-pink shadow-2xl" style="color: #C98A92;">
+                Abrir Invitación <i class="fas fa-envelope-open-text ml-2"></i>
             </button>
         </div>
     </div>
 
-    <!-- Capa de Mariposas -->
-    <div class="butterfly-container" id="butterfly-box"></div>
+    <!-- ==============================================
+         CONTENEDOR PRINCIPAL DE LA INVITACIÓN DIGITAL
+         ============================================== -->
+    <div class="mobile-container" id="main-invitation">
 
-    <!-- Música -->
-    <audio id="player" loop preload="auto">
-        <source src="https://vocaroo.com/media/download/16EvCiErJ5Wt" type="audio/mpeg">
-    </audio>
-    
-    <button id="music-btn" class="fixed bottom-8 right-8 z-[150] w-12 h-12 bg-white rounded-full flex items-center justify-center border border-purple-100 shadow-lg text-purple-600 hidden">
-        <i id="music-icon" class="fa-solid fa-pause"></i>
-    </button>
-
-    <!-- Navegación -->
-    <nav class="fixed top-0 w-full z-[60] py-4 bg-white/80 backdrop-blur-md border-b border-purple-50 shadow-sm">
-        <div class="flex justify-around items-center w-full max-w-4xl mx-auto px-2 text-purple-900 font-bold uppercase">
-            <a href="#inicio" class="text-[9px] tracking-widest">Inicio</a>
-            <a href="#donde" class="text-[9px] tracking-widest">Ubicación</a>
-            <a href="#itinerario" class="text-[9px] tracking-widest">Agenda</a>
-            <a href="#vestimenta" class="text-[9px] tracking-widest">Etiqueta</a>
-            <a href="#confirmar" class="text-[9px] tracking-widest">Asistencia</a>
-        </div>
-    </nav>
-
-    <!-- Portada Principal -->
-    <section id="inicio" class="hero-full" style="background-image: url('https://i.imgur.com/1sFijb2.jpg');">
-        <div class="hero-overlay"></div>
-        <!-- Decoración Floral Portada -->
-        <svg class="botanical-accent floral-bloom top-10 left-10 active" viewBox="0 0 100 100" style="color: white">
-            <circle cx="50" cy="50" r="2" fill="currentColor"/>
-            <path d="M50,40 Q60,30 70,40 T50,60 T30,40 Q40,30 50,40" fill="none" stroke="currentColor" stroke-width="0.5"/>
-        </svg>
-
-        <div class="relative z-10 text-center px-6 reveal-scale active">
-            <p class="font-script text-3xl md:text-5xl text-white opacity-90 mb-4 drop-shadow-lg">Mis XV Años</p>
-            <h1 class="title-main">Romina</h1>
-            <p class="font-serif italic text-lg md:text-2xl text-white mt-8 opacity-80 tracking-[0.3em]">11.07.2026</p>
-            <div class="mt-16 animate-bounce opacity-70">
-                <i class="fa-solid fa-chevron-down text-2xl text-white"></i>
-            </div>
-        </div>
-    </section>
-
-    <!-- Introducción con Lianas Florecidas -->
-    <section class="py-32 px-6 text-center bg-white relative border-b border-purple-50 overflow-hidden">
-        <!-- Liana Izquierda con Capullos -->
-        <svg class="botanical-accent vine-full vine-l reveal" viewBox="0 0 120 450">
-            <path d="M40,0 C60,100 20,250 40,450" fill="none" stroke="currentColor" stroke-width="0.8"/>
-            <circle cx="35" cy="80" r="3" fill="currentColor" opacity="0.4"/> <!-- Capullo -->
-            <circle cx="48" cy="150" r="2" fill="currentColor" opacity="0.6"/> <!-- Capullo -->
-            <path d="M42,200 Q60,210 50,225" fill="none" stroke="currentColor" stroke-width="0.5"/> <!-- Tallito -->
-            <circle cx="50" cy="225" r="4" fill="white" stroke="currentColor" stroke-width="0.3"/> <!-- Florcita -->
-        </svg>
-        
-        <div class="max-w-3xl mx-auto reveal relative z-10">
-            <p class="font-serif text-xl md:text-3xl italic leading-relaxed text-gray-700 px-4">
-                “Mis XV años llegan llenos de sueños… y quiero invitarte a ser parte de esta celebración tan especial; me haría muy feliz que me acompañaras.”
-            </p>
-            <div class="mt-12 h-px w-24 bg-sage-green/30 mx-auto"></div>
-        </div>
-        <div class="absolute inset-0 opacity-5 pointer-events-none">
-            <img src="https://i.imgur.com/pmXGXHT.jpg" class="w-full h-full object-cover grayscale" alt="decor">
-        </div>
-    </section>
-
-    <!-- FOTO HORIZONTAL 1: Caballo -->
-    <section class="bg-white py-16 flex justify-center overflow-hidden relative">
-        <div class="elegant-floral-frame reveal-scale">
-            <div class="frame-lines"></div>
-            <svg class="corner-branch cb-tl" viewBox="0 0 100 100">
-                <path d="M10,80 Q20,40 50,20 T90,10" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                <path d="M20,60 Q40,40 60,50" fill="none" stroke="currentColor" stroke-width="0.5"/>
-                <circle cx="15" cy="70" r="1.5" fill="currentColor" opacity="0.5"/>
-                <circle cx="85" cy="12" r="1" fill="currentColor"/> <!-- Capullo pequeño -->
+        <!-- 1. HERO IMAGE (Foto Superior con Curva) -->
+        <div class="hero-section">
+            <img src="https://i.imgur.com/LdZeMsb.jpeg" alt="Nicole">
+            <svg class="curve-overlay" viewBox="0 0 100 15" preserveAspectRatio="none">
+                <path d="M0,15 L100,15 L100,0 Q50,25 0,0 Z" fill="#FFF5F6" />
             </svg>
-            <svg class="corner-branch cb-br" viewBox="0 0 100 100">
-                <path d="M10,80 Q20,40 50,20 T90,10" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                <circle cx="15" cy="70" r="1.5" fill="currentColor" opacity="0.5"/>
+        </div>
+
+        <!-- 2. PORTADA (Tipografía y Destellos) -->
+        <div class="relative text-center mt-4 px-6 fade-up">
+
+            <!-- Destellos animados (Reemplazando a las mariposas) -->
+            <svg class="sparkle-icon w-10 top-2 left-6" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/>
             </svg>
-            <img src="https://i.imgur.com/rbqvLvl.jpg" class="framed-photo" alt="Romina y Caballo">
-        </div>
-    </section>
-
-    <!-- Padres -->
-    <section class="py-24 px-6 bg-lavender-soft/30 overflow-hidden relative">
-        <!-- Liana Derecha con Tallos -->
-        <svg class="botanical-accent vine-full vine-r reveal" viewBox="0 0 120 450">
-            <path d="M50,0 C30,150 70,300 50,450" fill="none" stroke="currentColor" stroke-width="0.8"/>
-            <path d="M55,100 Q80,110 70,130" fill="none" stroke="currentColor" stroke-width="0.5"/>
-            <circle cx="70" cy="130" r="2.5" fill="currentColor"/>
-            <circle cx="45" cy="280" r="1.5" fill="currentColor"/>
-        </svg>
-
-        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-            <div class="reveal-left">
-                <p class="text-[10px] font-bold uppercase tracking-[0.6em] text-sage-green mb-8 border-b border-sage-green/20 pb-4">Con la bendición de:</p>
-                <div class="space-y-10">
-                    <div class="reveal stagger-1">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-2">Mis Padres</p>
-                        <p class="text-3xl font-serif italic text-purple-900">Alicia Ibeth Cornejo Medina</p>
-                        <p class="text-3xl font-serif italic text-purple-900">Sergio Barajas Mondragón</p>
-                    </div>
-                    <div class="reveal stagger-2">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-2">Mi Madrina</p>
-                        <p class="text-3xl font-serif italic text-purple-900">Ma. Fernanda Rincón Medina</p>
-                    </div>
-                </div>
-            </div>
-            <div class="reveal-right">
-                <img src="https://i.imgur.com/yLFBiv0.jpg" alt="Familia" class="w-full h-[550px] object-cover shadow-2xl border-[15px] border-white">
-            </div>
-        </div>
-    </section>
-
-    <!-- FOTO HORIZONTAL 2 -->
-    <section class="bg-white py-16 flex justify-center overflow-hidden">
-        <div class="elegant-floral-frame reveal-scale">
-            <div class="frame-lines"></div>
-            <svg class="corner-branch cb-tl" viewBox="0 0 100 100">
-                <path d="M10,80 Q20,40 50,20 T90,10" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                <circle cx="55" cy="25" r="2" fill="currentColor" opacity="0.3"/>
+            <svg class="sparkle-icon delay-1 w-6 top-16 right-8" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/>
             </svg>
-            <img src="https://i.imgur.com/8ddBzK2.jpg" class="framed-photo" alt="Sesión Romina">
-        </div>
-    </section>
-
-    <!-- Ubicación con Tallos Florales -->
-    <section id="donde" class="py-24 bg-white text-center relative overflow-hidden">
-        <svg class="botanical-accent vine-full vine-l reveal" style="opacity: 0.2" viewBox="0 0 120 450">
-            <path d="M30,0 Q60,225 30,450" fill="none" stroke="currentColor" stroke-width="0.5"/>
-        </svg>
-
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h2 class="font-serif text-6xl mb-16 italic text-purple-950 reveal">Ubicación</h2>
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="reveal-left stagger-1 p-10 bg-lavender-soft/30 border border-purple-50 rounded-2xl">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.4em] mb-4 text-purple-900">Ceremonia • 18:30 h</p>
-                    <h4 class="font-serif text-2xl mb-10 leading-tight">Rectoría de Ntra. Sra. de la Soledad</h4>
-                    <a href="https://maps.google.com" target="_blank" class="text-[10px] font-bold uppercase border-b border-purple-900 pb-1">Ver en Mapa</a>
-                </div>
-                <div class="reveal-right stagger-1 p-10 bg-lavender-soft/30 border border-purple-50 rounded-2xl">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.4em] mb-4 text-purple-900">Recepción • 19:30 h</p>
-                    <h4 class="font-serif text-2xl mb-10 leading-tight">Salón “La Fortaleza”</h4>
-                    <a href="https://maps.google.com" target="_blank" class="text-[10px] font-bold uppercase border-b border-purple-900 pb-1">Ver en Mapa</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOTO HORIZONTAL 3 -->
-    <section class="bg-white py-16 flex justify-center overflow-hidden">
-        <div class="elegant-floral-frame reveal-scale">
-            <div class="frame-lines"></div>
-            <svg class="corner-branch cb-br" viewBox="0 0 100 100">
-                <path d="M10,80 Q20,40 50,20 T90,10" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                <path d="M40,30 Q60,20 80,35" fill="none" stroke="currentColor" stroke-width="0.4"/>
-                <circle cx="80" cy="35" r="2" fill="currentColor"/>
+            <svg class="sparkle-icon delay-2 w-8 bottom-6 left-10" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/>
             </svg>
-            <img src="https://i.imgur.com/te1mTmp.jpg" class="framed-photo" alt="Sesión Romina 2">
-        </div>
-    </section>
 
-    <!-- Itinerario con Capullos -->
-    <section id="itinerario" class="py-24 bg-[#fdfbff] relative overflow-hidden">
-        <!-- Tallo lateral en Itinerario -->
-        <svg class="botanical-accent vine-full vine-r reveal" style="top: 20%; opacity: 0.3" viewBox="0 0 120 450">
-            <path d="M80,0 C100,100 60,300 80,450" fill="none" stroke="currentColor" stroke-width="0.6"/>
-            <circle cx="95" cy="50" r="3" fill="currentColor"/>
-            <circle cx="70" cy="200" r="2" fill="currentColor"/>
-        </svg>
-
-        <div class="max-w-lg mx-auto px-6">
-            <h3 class="font-serif text-6xl text-center mb-20 italic text-purple-950 reveal">Itinerario</h3>
-            <div class="relative py-10 reveal">
-                <div class="itinerary-line"></div>
-                <div class="space-y-20 relative z-10">
-                    <div class="flex items-center reveal stagger-1">
-                        <div class="w-1/2 text-right pr-10 text-xs font-bold text-purple-300">18:30 h</div>
-                        <div class="w-3 h-3 rounded-full bg-purple-900 shadow-md"></div>
-                        <div class="w-1/2 pl-10 text-xs font-bold uppercase tracking-widest text-purple-900">Misa</div>
-                    </div>
-                    <div class="flex items-center reveal stagger-1">
-                        <div class="w-1/2 text-right pr-10 text-xs font-bold text-purple-300">19:30 h</div>
-                        <div class="w-3 h-3 rounded-full bg-purple-900 shadow-md"></div>
-                        <div class="w-1/2 pl-10 text-xs font-bold uppercase tracking-widest text-purple-900">Recepción</div>
-                    </div>
-                    <div class="flex items-center reveal stagger-2">
-                        <div class="w-1/2 text-right pr-10 text-xs font-bold text-purple-300">20:10 h</div>
-                        <div class="w-3 h-3 rounded-full bg-purple-900 shadow-md"></div>
-                        <div class="w-1/2 pl-10 text-xs font-bold uppercase tracking-widest text-purple-900">Vals</div>
-                    </div>
-                    <div class="flex items-center reveal stagger-2">
-                        <div class="w-1/2 text-right pr-10 text-xs font-bold text-orange-400">21:00 h</div>
-                        <div class="w-5 h-5 rounded-full bg-orange-400 animate-pulse border-4 border-white shadow-lg -ml-1"></div>
-                        <div class="w-1/2 pl-10 text-xs font-bold uppercase tracking-widest text-orange-600">¡Baile!</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Vestimenta -->
-    <section id="vestimenta" class="py-24 bg-purple-950 text-white text-center relative overflow-hidden">
-        <svg class="botanical-accent vine-l reveal" style="height: 100%; top: 0; color: rgba(255,255,255,0.1)" viewBox="0 0 120 800">
-            <path d="M60,0 C30,200 90,600 60,800" fill="none" stroke="currentColor" stroke-width="1"/>
-            <circle cx="50" cy="150" r="4" fill="currentColor"/>
-            <circle cx="70" cy="450" r="3" fill="currentColor"/>
-        </svg>
-
-        <div class="max-w-2xl mx-auto px-6 reveal">
-            <h3 class="font-serif text-4xl uppercase tracking-[0.4em] mb-16 italic">Etiqueta</h3>
-            <div class="p-10 border border-white/10 bg-white/[0.02] rounded-3xl">
-                <p class="text-xs font-bold uppercase tracking-[0.3em] mb-8">Formal</p>
-                <div class="flex justify-center gap-6 flex-wrap mb-16">
-                    <div class="reveal-scale flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full" style="background: #2d6a4f;"></div><span class="text-[8px] uppercase opacity-40">Verde</span></div>
-                    <div class="reveal-scale flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full" style="background: #1a237e;"></div><span class="text-[8px] uppercase opacity-40">Azul</span></div>
-                    <div class="reveal-scale flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full" style="background: #f5f5dc;"></div><span class="text-[8px] uppercase opacity-40">Beige</span></div>
-                    <div class="reveal-scale flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full" style="background: #9e9e9e;"></div><span class="text-[8px] uppercase opacity-40">Gris</span></div>
-                    <div class="reveal-scale flex flex-col items-center gap-2"><div class="w-8 h-8 rounded-full" style="background: #4e342e;"></div><span class="text-[8px] uppercase opacity-40">Café</span></div>
-                </div>
-                <div class="pt-10 border-t border-white/10 reveal">
-                    <p class="font-serif text-xl italic text-purple-100 mb-6">Exclusivo Quinceañera:</p>
-                    <div class="flex justify-center gap-6 text-[10px] font-bold tracking-[0.2em] opacity-80 uppercase">
-                        <span>Vino</span> | <span>Rojo</span> | <span>Dorado</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Detalles con Tallos y Capullos -->
-    <section class="py-24 bg-white text-center relative overflow-hidden">
-        <svg class="botanical-accent vine-full vine-r reveal" style="height: 700px; opacity: 0.3" viewBox="0 0 120 700">
-            <path d="M50,0 Q80,350 50,700" fill="none" stroke="currentColor" stroke-width="0.8"/>
-            <path d="M55,150 L85,140" fill="none" stroke="currentColor" stroke-width="0.4"/>
-            <circle cx="85" cy="140" r="3" fill="currentColor"/> <!-- Capullo -->
-            <path d="M45,400 L20,390" fill="none" stroke="currentColor" stroke-width="0.4"/>
-            <circle cx="20" cy="390" r="2.5" fill="currentColor"/> <!-- Capullo -->
-        </svg>
-
-        <div class="flex justify-center mb-16 px-4">
-            <div class="elegant-floral-frame reveal-scale">
-                <div class="frame-lines"></div>
-                <svg class="corner-branch cb-tl" viewBox="0 0 100 100">
-                    <path d="M10,80 Q20,40 50,20 T90,10" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                    <circle cx="15" cy="70" r="2" fill="currentColor"/>
+            <!-- Corona Lineal Simple -->
+            <div class="flex justify-center mb-4 text-accent-pink relative z-20">
+                <svg width="45" height="30" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 50 L90 50" />
+                    <path d="M20 45 L10 15 L35 30 L50 5 L65 30 L90 15 L80 45 Z" />
+                    <circle cx="50" cy="5" r="3" fill="currentColor"/>
+                    <circle cx="10" cy="15" r="2.5" fill="currentColor"/>
+                    <circle cx="90" cy="15" r="2.5" fill="currentColor"/>
                 </svg>
-                <img src="https://i.imgur.com/ambJt7D.jpg" class="framed-photo" style="max-height: 450px;" alt="Detalle Romina">
+            </div>
+            
+            <!-- Tipografía Destacada MUCHO MÁS GRANDE -->
+            <h2 class="font-sans text-[28px] font-bold tracking-[0.2em] text-accent-pink uppercase mb-2 relative z-20">
+                Mis XV Años
+            </h2>
+
+            <div class="divider my-4">✦ ── ✦</div>
+            
+            <!-- Nombre Completo unificado en la misma tipografía cursiva -->
+            <h1 class="font-script text-accent-pink leading-tight my-4 relative z-20">
+                <span class="text-[60px] block mb-1">Nicole</span>
+                <span class="text-[40px] block leading-none">De La Cruz Sandoval</span>
+            </h1>
+        </div>
+
+        <!-- 3. FECHA Y FRASE -->
+        <div class="text-center mt-10 mb-8 px-6 fade-up">
+            <p class="font-sans text-[12px] font-bold tracking-[0.2em] text-accent-pink border-y border-accent-light py-3 inline-block px-8 mb-6 uppercase bg-white rounded-xl shadow-sm relative z-20">
+                16 . Mayo . 2026
+            </p>
+
+            <!-- Frase grande, en negritas y cursiva -->
+            <p class="font-sans italic font-bold text-[18px] text-text-main leading-relaxed px-2 relative z-20">
+                "Hay momentos en la vida que son irrepetibles, pero compartirlos con las personas que más quieres, los vuelve inolvidables."
+            </p>
+        </div>
+
+        <!-- 4. PADRES Y PADRINOS (Todo en Cursiva) -->
+        <div class="content-card text-center fade-up relative">
+            <!-- Destello decorativo -->
+            <svg class="sparkle-icon delay-1 w-10 top-0 left-0 -translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+
+            <div class="relative z-10 pt-2 space-y-6 italic">
+                <div>
+                    <p class="font-sans text-[9px] font-bold tracking-[0.2em] text-accent-pink uppercase mb-2 italic">Con la bendición de Dios y mis padres</p>
+                    <p class="font-sans text-[13px] text-text-main font-semibold italic">Alma Sandoval Reyes</p>
+                    <p class="font-sans text-[13px] text-text-main font-semibold mt-1 italic">Hector Sanchez Vaca</p>
+                </div>
+
+                <div class="divider my-4">✦ ── ✦</div>
+
+                <div class="relative">
+                    <div class="relative z-10">
+                        <p class="font-sans text-[9px] font-bold tracking-[0.2em] text-accent-pink uppercase mb-2 italic">Y mis padrinos</p>
+                        <p class="font-sans text-[13px] text-text-main font-semibold italic">Rebeca Sandoval Reyes</p>
+                        <p class="font-sans text-[13px] text-text-main font-semibold mt-1 italic">Mauricio Alvarez Camilo</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="reveal text-center flex flex-col items-center mb-24">
-                <h3 class="font-serif text-5xl mb-12 italic text-purple-950">Detalles</h3>
-                <div class="p-12 md:p-20 bg-lavender-soft/30 border border-purple-50 rounded-3xl mx-auto max-w-2xl text-center">
-                    <p class="text-lg mb-8 italic text-gray-500 font-serif">“Tu compañía es mi mejor regalo, pero si deseas tener un detalle conmigo:”</p>
-                    <p class="text-[11px] font-bold uppercase text-purple-400 tracking-[0.5em] mb-2">Liverpool</p>
-                    <p class="text-6xl md:text-7xl font-serif text-purple-900 mb-10 italic">51936318</p>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold tracking-[0.4em]">Contaremos con buzón de sobres</p>
+        <!-- 5. CARRETES DE FOTOS -->
+        <section class="pt-8 pb-2 fade-up">
+            <div class="relative flex justify-center items-center mb-6 px-4">
+                <svg class="sparkle-icon delay-2 w-8 top-[-10px] right-[20px]" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+                <h3 class="font-script text-center text-4xl text-accent-pink relative z-10">Mis Primeros Años</h3>
+            </div>
+            
+            <div class="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory hide-scrollbar px-5 items-center relative z-20">
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/kOqPiEX.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/YLM3Df7.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/xjhBKnI.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/7naPIfW.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/RPjODYb.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/f4IBbcU.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/86nv8FC.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/VjPRx1o.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/wYOb140.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/trfadYI.jpeg" class="photo-wavy" alt="Foto"></div>
+                <div class="snap-center shrink-0"><img src="https://i.imgur.com/xen9xml.jpeg" class="photo-wavy" alt="Foto"></div>
+            </div>
+        </section>
+
+        <section class="fade-up mt-6 mb-8">
+            <div class="relative flex justify-center items-center mb-6 px-4">
+                <svg class="sparkle-icon w-8 top-[-10px] left-[20px]" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+                <h3 class="font-script text-center text-4xl text-accent-pink relative z-10">Rumbo a mis XV</h3>
+            </div>
+            
+            <!-- GALERÍA VERTICAL (Sin ondas, solo bordes redondeados) -->
+            <div class="flex flex-col gap-5 px-6 relative z-20">
+                <div><img src="https://i.imgur.com/gUx7ARS.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/TMFGXsx.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/QxNcMHJ.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/dNn4K28.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/g6NMY5D.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/8si28Rk.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/kQzHvSV.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/IsJuo8B.jpeg" class="photo-rounded" alt="Foto"></div>
+                <div><img src="https://i.imgur.com/LdZeMsb.jpeg" class="photo-rounded" alt="Foto"></div>
+            </div>
+        </section>
+
+        <!-- 6. EVENTOS (Ceremonia y Recepción) -->
+        <div class="content-card text-center fade-up mb-6 relative">
+            
+            <!-- Destello decorativo -->
+            <svg class="sparkle-icon w-10 top-0 left-0 -translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+
+            <div class="relative z-10 pt-2">
+                <div class="mb-8">
+                    <div class="w-12 h-12 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-xl shadow-sm border border-white">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <h3 class="font-sans text-[14px] uppercase tracking-[0.2em] text-text-main font-bold mb-1">Ceremonia</h3>
+                    <p class="font-sans font-semibold text-accent-pink text-[12px] tracking-widest mb-3">5:00 PM</p>
+                    <p class="font-sans text-[10px] text-text-main mb-4 leading-relaxed font-medium">
+                        Santuario del Santo Niño de la Salud<br>
+                        <span class="opacity-70 text-[9px]">Av. Acueducto, Lomas de Hidalgo</span>
+                    </p>
+                    <a href="https://maps.app.goo.gl/2s1T3w1A7HBk43u96" target="_blank" class="btn-solid text-[9px] py-3 px-6">
+                        Ver Ubicación <i class="fas fa-map-marker-alt ml-2"></i>
+                    </a>
+                </div>
+
+                <div class="divider my-6">✦ ── ✦</div>
+
+                <div class="mt-8 relative">
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-xl shadow-sm border border-white">
+                            <i class="fas fa-glass-cheers"></i>
+                        </div>
+                        <h3 class="font-sans text-[14px] uppercase tracking-[0.2em] text-text-main font-bold mb-1">Recepción</h3>
+                        <p class="font-sans font-semibold text-accent-pink text-[12px] tracking-widest mb-3">7:00 PM</p>
+                        <p class="font-sans text-[10px] text-text-main mb-4 leading-relaxed font-medium">
+                            Eventos Isabel<br>
+                            <span class="opacity-70 text-[9px]">Privada de Mármol #38, Hacienda Los Viñedos</span>
+                        </p>
+                        <a href="https://maps.app.goo.gl/UP9Sprmaj57RkCio9?g_st=aw" target="_blank" class="btn-solid text-[9px] py-3 px-6">
+                            Ver Ubicación <i class="fas fa-map-marker-alt ml-2"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="reveal py-20 border-y border-purple-50 mb-24 text-center">
-                <h3 class="font-serif text-3xl uppercase tracking-[0.4em] mb-12 text-purple-900 italic">Faltan sólo...</h3>
-                <div id="timer" class="flex justify-center gap-3 md:gap-8 flex-wrap"></div>
+        </div>
+
+        <!-- 7. CÓDIGO DE VESTIMENTA & REGALOS -->
+        <div class="content-card text-center fade-up relative">
+            
+            <!-- Destello decorativo -->
+            <svg class="sparkle-icon delay-1 w-10 top-0 right-0 translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+            
+            <div class="relative z-10 pt-2">
+                <div class="mb-10">
+                    <div class="w-10 h-10 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-lg shadow-sm border border-white">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3 class="font-sans text-[13px] uppercase tracking-[0.2em] text-text-main font-bold mb-2">Código de Vestimenta</h3>
+                    <p class="font-sans font-bold text-accent-pink text-[12px] tracking-widest uppercase mb-3">Formal</p>
+                    <div class="bg-bg-pink p-3 rounded-lg border border-accent-light shadow-inner">
+                        <p class="font-sans text-[9px] text-text-main leading-relaxed uppercase tracking-wider font-semibold">
+                            Se reserva el uso de los colores<br>
+                            <span class="font-bold text-[#b85966]">Rosa</span>, <span class="font-bold text-[#8A6F7E]">Mauve</span>, <span class="font-bold text-[#C98A92]">Rose Gold</span> y <span class="font-bold text-gray-500">Plateado</span><br>
+                            exclusivamente para la quinceañera.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider my-6">✦ ── ✦</div>
+
+                <div class="relative">
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 bg-bg-pink rounded-full flex items-center justify-center mx-auto mb-3 text-accent-pink text-lg shadow-sm border border-white">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3 class="font-sans text-[13px] uppercase tracking-[0.2em] text-text-main font-bold mb-3">Mesa de Regalos</h3>
+                        <p class="font-sans text-[9px] text-text-main mb-5 leading-relaxed uppercase tracking-wide font-medium">
+                            Tu presencia es mi mayor regalo, pero si deseas tener un detalle conmigo:
+                        </p>
+                        
+                        <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51974095" target="_blank" class="btn-solid w-full mb-3 shadow-md">
+                            Liverpool: 51974095
+                        </a>
+                        <p class="font-sans text-[10px] text-accent-pink font-bold mb-3 uppercase">ó</p>
+                        <div class="w-full border-2 border-accent-pink text-accent-pink bg-white py-3 rounded-full font-sans text-[11px] font-bold uppercase tracking-widest flex justify-center items-center shadow-sm">
+                            <i class="fas fa-box-open mr-2"></i> Regalo Sorpresa
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="reveal py-20 bg-purple-50/20 border-y border-purple-100 mb-24 rounded-[50px] text-center px-6">
-                <p class="font-serif text-5xl italic text-purple-900/80 mb-6">“Velada de Gala”</p>
-                <p class="text-[11px] text-purple-900/60 uppercase tracking-[0.3em] max-w-sm mx-auto leading-loose font-bold">
-                    Agradecemos su comprensión: hemos diseñado una noche pensada especialmente para los adultos.
-                </p>
+        </div>
+
+        <!-- 8. COUNTDOWN & RSVP -->
+        <section class="pt-8 px-4 text-center fade-up relative">
+            <svg class="sparkle-icon w-12 top-0 left-4" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 C50 30 70 50 100 50 C70 50 50 70 50 100 C50 70 30 50 0 50 C30 50 50 30 50 0 Z"/></svg>
+
+            <div class="relative z-10">
+                <h3 class="font-sans text-[11px] uppercase tracking-[0.3em] text-text-main font-bold mb-6">Faltan</h3>
+                
+                <div class="flex justify-center gap-3 font-sans text-text-main mb-10">
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="days" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Días</span>
+                    </div>
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="hours" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Hrs</span>
+                    </div>
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="minutes" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Min</span>
+                    </div>
+                    <div class="bg-white shadow-md rounded-2xl p-3 w-[65px] border border-accent-light">
+                        <span id="seconds" class="text-2xl block font-bold text-accent-pink">00</span>
+                        <span class="text-[7px] uppercase tracking-[0.2em] mt-1 block font-bold">Seg</span>
+                    </div>
+                </div>
+
+                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+de+Nicole&dates=20260516T230000Z/20260517T080000Z&details=%C2%A1Te+espero+para+celebrar+mis+XV+a%C3%B1os!%0A%0ACeremonia:+5:00+PM%0ARecepci%C3%B3n:+7:00+PM&location=Santuario+del+Santo+Ni%C3%B1o+de+la+Salud,+Morelia,+Mich." target="_blank" class="font-sans text-[9px] text-accent-pink border-b border-accent-pink pb-1 mb-10 inline-block uppercase tracking-widest font-bold hover:opacity-70 transition">
+                    <i class="far fa-calendar-alt mr-1"></i> Agendar Fecha
+                </a>
+
+                <div class="mt-4 px-2">
+                    <p class="font-sans text-[10px] text-text-main mb-5 leading-relaxed uppercase tracking-widest font-semibold">
+                        Confirma tu asistencia antes del<br>
+                        <span class="font-bold text-[12px] text-accent-pink">01 de Mayo de 2026</span>
+                    </p>
+                    <a href="https://wa.me/524431465149?text=¡Hola!%20Confirmo%20mi%20asistencia%20a%20los%20XV%20años%20de%20Nicole.%20✨" target="_blank" class="btn-solid w-full shadow-lg">
+                        Confirmar Asistencia <i class="fab fa-whatsapp ml-2 text-xl"></i>
+                    </a>
+                </div>
+            
+                <p class="font-script text-6xl mt-16 text-accent-pink">¡Te espero!</p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- FOTO FINAL con Decoración -->
-    <section class="bg-white py-16 flex justify-center overflow-hidden">
-        <div class="elegant-floral-frame reveal-scale">
-            <div class="frame-lines"></div>
-            <svg class="corner-branch cb-tl" viewBox="0 0 100 100">
-                <path d="M10,80 Q20,40 50,20 T90,10" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                <circle cx="40" cy="30" r="2.5" fill="currentColor"/>
-            </svg>
-            <img src="https://i.imgur.com/9e2HXgu.jpg" class="framed-photo" alt="Romina Final">
-        </div>
-    </section>
-
-    <!-- Asistencia Final Florecida -->
-    <section id="confirmar">
-        <svg class="botanical-accent vine-full vine-l reveal" style="height: 500px; top: 0" viewBox="0 0 120 500">
-            <path d="M60,0 C30,150 70,350 50,500" fill="none" stroke="currentColor" stroke-width="0.8"/>
-            <circle cx="55" cy="100" r="4" fill="white" stroke="currentColor" stroke-width="0.5"/> <!-- Flor abierta -->
-            <path d="M40,250 Q10,240 20,270" fill="none" stroke="currentColor" stroke-width="0.4"/>
-            <circle cx="20" cy="270" r="2" fill="currentColor"/>
-        </svg>
-
-        <div class="relative z-10 text-center text-purple-950 px-6 reveal">
-            <h3 class="font-serif text-7xl md:text-[8rem] italic mb-10">Asistencia</h3>
-            <p class="text-xl mb-16 max-w-md mx-auto italic font-light text-gray-500">
-                “Me encantaría compartir este sueño contigo. Por favor confirma tu asistencia antes del <strong>6 de junio</strong>.”
-            </p>
-            <a href="https://wa.me/524433586727?text=Hola%20Romina,%20confirmo%20mi%20asistencia." target="_blank" class="btn-welcome !bg-purple-900 !text-white mx-auto shadow-2xl">
-                Confirmar vía WhatsApp
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-cover bg-center h-[75vh] flex flex-col justify-start pt-20 text-center text-white relative" style="background-image: url('https://i.imgur.com/vdXvBur.jpg');">
-        <div class="absolute inset-0 bg-black/35"></div>
-        <div class="relative z-10 reveal">
-            <h2 class="font-serif text-7xl md:text-9xl mb-6 italic">Romina</h2>
-            <p class="text-[10px] uppercase tracking-[0.8em] opacity-90">M.M.X.X.V.I</p>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        const welcome = document.getElementById('welcome-overlay');
-        const openBtn = document.getElementById('open-btn');
-        const audio = document.getElementById('player');
-        const musicBtn = document.getElementById('music-btn');
+        // ==========================================
+        // FUNCIONALIDAD DE LA PANTALLA DE BIENVENIDA (Safari FIX)
+        // ==========================================
+        let isPlaying = false;
+        const audio = document.getElementById("bg-music");
+        const musicToggle = document.getElementById("music-toggle");
 
-        function playAudio() {
-            audio.load(); 
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    musicBtn.classList.remove('hidden');
-                }).catch(error => {
-                    console.log("Audio play blocked.");
-                });
-            }
-        }
+        function abrirInvitacion() {
+            // 1. Quitar el bloqueo de scroll (Parche para Safari iOS)
+            document.body.classList.remove('locked');
+            document.body.style.position = 'relative';
+            
+            // 2. Ocultar la pantalla de bienvenida con transición
+            document.getElementById('welcome-screen').classList.add('hidden-screen');
+            
+            // 3. Activar las animaciones de la invitación
+            document.body.classList.add('invitation-opened');
 
-        openBtn.addEventListener('click', () => {
-            welcome.classList.add('opened');
-            document.body.style.overflow = 'auto';
-            playAudio();
-            setTimeout(() => welcome.style.display = 'none', 1300);
-        });
-
-        const butterBox = document.getElementById('butterfly-box');
-        if (butterBox) {
-            for (let i = 0; i < 15; i++) {
-                const bfly = document.createElement('div');
-                bfly.className = 'butterfly';
-                bfly.innerHTML = '<div class="wing left"></div><div class="wing right"></div>';
-                bfly.style.left = Math.random() * 100 + '%';
-                bfly.style.top = Math.random() * 100 + '%';
-                bfly.style.setProperty('--speed', (Math.random() * 15 + 15) + 's');
-                bfly.style.animationDelay = Math.random() * 15 + 's';
-                butterBox.appendChild(bfly);
-            }
-        }
-
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
+            // 4. Iniciar la música automáticamente (Adaptado para las políticas de iOS)
+            if (!isPlaying) {
+                audio.load(); // Forzar carga en Safari antes de reproducir para asegurar interacción
+                let playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        isPlaying = true;
+                        musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
+                    }).catch(error => {
+                        console.log("El navegador (Safari/iOS) bloqueó el autoplay", error);
+                    });
                 }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .botanical-accent').forEach(el => observer.observe(el));
-
-        const target = new Date("July 11, 2026 18:30:00").getTime();
-        function updateTimer() {
-            const diff = target - Date.now();
-            if (diff < 0) return;
-            const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
-            const timerEl = document.getElementById('timer');
-            if (timerEl) {
-                timerEl.innerHTML = `<div class='bg-white p-4 min-w-[80px] border border-sage-green/20 shadow-sm'><span class='text-3xl block text-purple-900 font-serif'>${d}</span><span class='text-[8px] uppercase tracking-widest opacity-40'>Días</span></div><div class='bg-white p-4 min-w-[80px] border border-sage-green/20 shadow-sm'><span class='text-3xl block text-purple-900 font-serif'>${h}</span><span class='text-[8px] uppercase tracking-widest opacity-40'>Horas</span></div><div class='bg-white p-4 min-w-[80px] border border-sage-green/20 shadow-sm'><span class='text-3xl block text-purple-900 font-serif'>${m}</span><span class='text-[8px] uppercase tracking-widest opacity-40'>Min</span></div><div class='bg-white p-4 min-w-[80px] border border-sage-green/20 shadow-sm'><span class='text-3xl block text-purple-900 font-serif'>${s}</span><span class='text-[9px] uppercase tracking-widest opacity-40'>Seg</span></div>`;
             }
         }
-        setInterval(updateTimer, 1000); updateTimer();
 
-        let playing = true;
-        musicBtn.addEventListener('click', () => {
-            if (playing) { audio.pause(); document.getElementById('music-icon').className = 'fa-solid fa-play'; } 
-            else { audio.play(); document.getElementById('music-icon').className = 'fa-solid fa-pause'; }
-            playing = !playing;
-        });
+        // ==========================================
+        // REPRODUCTOR DE MÚSICA (TOGGLE)
+        // ==========================================
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicToggle.innerHTML = '<i class="fas fa-music text-xl"></i>';
+                isPlaying = false;
+            } else {
+                audio.play();
+                musicToggle.innerHTML = '<i class="fas fa-pause text-xl"></i>';
+                isPlaying = true;
+            }
+        }
 
-        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+        // ==========================================
+        // CUENTA REGRESIVA
+        // ==========================================
+        const countDownDate = new Date("May 16, 2026 17:00:00").getTime();
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            const daysEl = document.getElementById("days");
+            if (daysEl) {
+                daysEl.innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+
+            if (distance < 0) {
+                clearInterval(x);
+                if (daysEl) {
+                    daysEl.innerHTML = "00";
+                    document.getElementById("hours").innerHTML = "00";
+                    document.getElementById("minutes").innerHTML = "00";
+                    document.getElementById("seconds").innerHTML = "00";
+                }
+            }
+        }, 1000);
     </script>
 </body>
 </html>
